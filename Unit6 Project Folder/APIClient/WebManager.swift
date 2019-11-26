@@ -14,7 +14,7 @@ func assignPickerViewPeople() {
 
 func pickerViewCharacterDisplay() {
     pickerViewAttribute1 = arrayOfCharacterAttribute1
-    displayAttribute2 = arrayOfCharacterAttribute2
+    displayAttribute2 = arrayOfplanets
     displayAttribute3 = arrayOfCharacterAttribute3
     displayAttribute4 = arrayOfCharacterAttribute4
     displayAttribute5 = arrayOfCharacterAttribute5
@@ -64,6 +64,21 @@ class WebManager {
             } catch let jsonError {
                 print("Error Getting JSON:", jsonError)
             }
+                for planets in arrayOfCharacterAttribute2 {
+                    guard let url = URL(string: planets) else {return}
+                    URLSession.shared.dataTask(with: url) { (data, response, error) in
+                        DispatchQueue.main.async {
+                        guard let data = data else { return }
+                        do {
+                            let planetData = try JSONDecoder().decode(PlanetData.self, from: data)
+                            arrayOfplanets.append(planetData.name)
+                            print(planetData.name)
+                        } catch let jsonError {
+                            print("Error Getting JSON", jsonError)
+                        }
+                        }
+                        }.resume()
+                }
             }
             }.resume()
     }
@@ -85,6 +100,7 @@ class WebManager {
                         arrayOfVehicleAttribute3.append(vehicleResultList.length)
                         arrayOfVehicleAttribute4.append(vehicleResultList.vehicle_class)
                         arrayOfVehicleAttribute5.append(vehicleResultList.crew)
+                        print("Got a Vehical")
                     }
                 } catch let jsonError {
                     print("Error Getting JSON:", jsonError)
@@ -117,7 +133,6 @@ class WebManager {
             }
             }.resume()
     }
-    
 }
 
 func clearAllCharacterArrays() {

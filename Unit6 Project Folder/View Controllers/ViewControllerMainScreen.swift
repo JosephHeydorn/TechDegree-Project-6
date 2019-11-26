@@ -12,13 +12,6 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
     
     var values: [AnyObject] = []
     
-    
-    var dataDisplayHolders: [attributes] = [] {
-        didSet {
-            pickerView.dataSource = self
-        }
-    }
-    
     let client = WebManager()
     
     //Picker View
@@ -47,6 +40,13 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
     @IBOutlet weak var middleFourthLabel: UILabel!
     @IBOutlet weak var middleFifthLabel: UILabel!
     
+    //Stack Buttons
+    @IBOutlet weak var metricButton: UIButton!
+    @IBOutlet weak var englishButton: UIButton!
+    @IBOutlet weak var creditsButton: UIButton!
+    @IBOutlet weak var usdButton: UIButton!
+    
+    
     
     
 
@@ -72,6 +72,9 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
             stackFourthLabel.text = "Eyes"
             stackFifthLabel.text = "Hair"
             mainNameLabel.text = "Characters"
+            creditsButton.isHidden = true
+            usdButton.isHidden = true
+            englishButtonEnabled()
         } else if viewControllerData == ViewControllerDisplayOragnizer.vehical {
             stackFirstLabel.text = "Make"
             stackSecondLabel.text = "Cost"
@@ -79,6 +82,8 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
             stackFourthLabel.text = "Class"
             stackFifthLabel.text = "Crew"
             mainNameLabel.text = "Vehicals"
+            creditsButton.isHidden = false
+            usdButton.isHidden = false
         } else if viewControllerData == ViewControllerDisplayOragnizer.starships {
             stackFirstLabel.text = "Make"
             stackSecondLabel.text = "Cost"
@@ -86,6 +91,8 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
             stackFourthLabel.text = "Class"
             stackFifthLabel.text = "Crew"
             mainNameLabel.text = "Starships"
+            creditsButton.isHidden = false
+            usdButton.isHidden = false
             
         }
     }
@@ -111,14 +118,50 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
         updateCurrentView()
     }
     
+    @IBAction func metricButtonPressed(_ sender: Any) {
+        middleThirdLabel.text = displayAttribute3[pickerView.selectedRow(inComponent: 0)]
+        englishButtonEnabled()
+        
+    }
+    
+    @IBAction func englishButtonPressed(_ sender: Any) {
+        unitStringConversion()
+        convertToMeters()
+        middleThirdLabel.text = meterPasserString
+        metricButtonEnabled()
+    }
+    
+    
     func updateCurrentView() {
     
         subNameLabel.text = pickerViewAttribute1[pickerView.selectedRow(inComponent: 0)]
         middleFirstLabel.text = pickerViewAttribute1[pickerView.selectedRow(inComponent: 0)]
-        //middleSecondLabel.text = displayAttribute2[pickerView.selectedRow(inComponent: 0)]
+        middleSecondLabel.text = displayAttribute2[pickerView.selectedRow(inComponent: 0)]
         middleThirdLabel.text = displayAttribute3[pickerView.selectedRow(inComponent: 0)]
         middleFourthLabel.text = displayAttribute4[pickerView.selectedRow(inComponent: 0)]
         middleFifthLabel.text = displayAttribute5[pickerView.selectedRow(inComponent: 0)]
+        englishButtonEnabled()
+        
+    }
+
+    func unitStringConversion() {
+        let metersString = displayAttribute3[pickerView.selectedRow(inComponent: 0)]
+        let metersDoubleConvert = Double(metersString) ?? 0
+        meterPasserDouble = metersDoubleConvert
+        
     }
     
+    //Below Greys out the buttons when it is selected to stop it from being spammed. 
+    func metricButtonEnabled() {
+        metricButton.isEnabled = true
+        metricButton.setTitleColor(UIColor.gray, for: .disabled)
+        englishButton.isEnabled = false
+        englishButton.setTitleColor(UIColor.gray, for: .disabled)
+    }
+    func englishButtonEnabled() {
+        metricButton.isEnabled = false
+        metricButton.setTitleColor(UIColor.gray, for: .disabled)
+        englishButton.isEnabled = true
+        englishButton.setTitleColor(UIColor.gray, for: .disabled)
+    }
 }

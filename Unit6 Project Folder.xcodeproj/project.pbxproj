@@ -12,13 +12,13 @@
 		D458F507237A15D200DF4618 /* JSONDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D458F506237A15D200DF4618 /* JSONDownloader.swift */; };
 		D458F50B237A17B500DF4618 /* VehicalData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D458F50A237A17B500DF4618 /* VehicalData.swift */; };
 		D458F50D237A195C00DF4618 /* StarshipData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D458F50C237A195C00DF4618 /* StarshipData.swift */; };
-		D458F50F2383739400DF4618 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = D458F50E2383739400DF4618 /* Endpoint.swift */; };
+		D48C8BF7238B65CB00E6E7B6 /* MeterConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48C8BF6238B65CB00E6E7B6 /* MeterConversion.swift */; };
+		D48C8BF9238CB41E00E6E7B6 /* PlanetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48C8BF8238CB41E00E6E7B6 /* PlanetData.swift */; };
 		D492ABF1235543DF00DF2BE8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D492ABF0235543DF00DF2BE8 /* AppDelegate.swift */; };
 		D492ABF3235543DF00DF2BE8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D492ABF2235543DF00DF2BE8 /* ViewController.swift */; };
 		D492ABF6235543DF00DF2BE8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D492ABF4235543DF00DF2BE8 /* Main.storyboard */; };
 		D492ABF8235543E000DF2BE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D492ABF7235543E000DF2BE8 /* Assets.xcassets */; };
 		D492ABFB235543E000DF2BE8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D492ABF9235543E000DF2BE8 /* LaunchScreen.storyboard */; };
-		D4BF40352386067100E43C0C /* attributeOrganizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4BF40342386067100E43C0C /* attributeOrganizer.swift */; };
 		D4C17D01236B931700926A25 /* ViewControllerDisplayOrganizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C17D00236B931700926A25 /* ViewControllerDisplayOrganizer.swift */; };
 		D4C17D03236B963500926A25 /* ViewControllerMainScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C17D02236B963500926A25 /* ViewControllerMainScreen.swift */; };
 		D4C17D0B2370B92D00926A25 /* CharacterData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C17D0A2370B92D00926A25 /* CharacterData.swift */; };
@@ -30,7 +30,8 @@
 		D458F506237A15D200DF4618 /* JSONDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONDownloader.swift; sourceTree = "<group>"; };
 		D458F50A237A17B500DF4618 /* VehicalData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicalData.swift; sourceTree = "<group>"; };
 		D458F50C237A195C00DF4618 /* StarshipData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarshipData.swift; sourceTree = "<group>"; };
-		D458F50E2383739400DF4618 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
+		D48C8BF6238B65CB00E6E7B6 /* MeterConversion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeterConversion.swift; sourceTree = "<group>"; };
+		D48C8BF8238CB41E00E6E7B6 /* PlanetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanetData.swift; sourceTree = "<group>"; };
 		D492ABED235543DF00DF2BE8 /* Unit6 Project Folder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Unit6 Project Folder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D492ABF0235543DF00DF2BE8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D492ABF2235543DF00DF2BE8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -38,7 +39,6 @@
 		D492ABF7235543E000DF2BE8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D492ABFA235543E000DF2BE8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D492ABFC235543E000DF2BE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D4BF40342386067100E43C0C /* attributeOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = attributeOrganizer.swift; sourceTree = "<group>"; };
 		D4C17D00236B931700926A25 /* ViewControllerDisplayOrganizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerDisplayOrganizer.swift; sourceTree = "<group>"; };
 		D4C17D02236B963500926A25 /* ViewControllerMainScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerMainScreen.swift; sourceTree = "<group>"; };
 		D4C17D0A2370B92D00926A25 /* CharacterData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterData.swift; sourceTree = "<group>"; };
@@ -55,6 +55,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D48C8BF5238B650A00E6E7B6 /* UnitConversion */ = {
+			isa = PBXGroup;
+			children = (
+				D48C8BF6238B65CB00E6E7B6 /* MeterConversion.swift */,
+			);
+			path = UnitConversion;
+			sourceTree = "<group>";
+		};
 		D492ABE4235543DF00DF2BE8 = {
 			isa = PBXGroup;
 			children = (
@@ -74,6 +82,7 @@
 		D492ABEF235543DF00DF2BE8 /* Unit6 Project Folder */ = {
 			isa = PBXGroup;
 			children = (
+				D48C8BF5238B650A00E6E7B6 /* UnitConversion */,
 				D4C17D092370B90400926A25 /* DataDisplay */,
 				D4C17D04236CDF4400926A25 /* APIClient */,
 				D492AC022355441000DF2BE8 /* View Controllers */,
@@ -113,8 +122,7 @@
 				D4C17D0A2370B92D00926A25 /* CharacterData.swift */,
 				D458F50A237A17B500DF4618 /* VehicalData.swift */,
 				D458F50C237A195C00DF4618 /* StarshipData.swift */,
-				D458F50E2383739400DF4618 /* Endpoint.swift */,
-				D4BF40342386067100E43C0C /* attributeOrganizer.swift */,
+				D48C8BF8238CB41E00E6E7B6 /* PlanetData.swift */,
 			);
 			path = DataDisplay;
 			sourceTree = "<group>";
@@ -190,17 +198,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D4BF40352386067100E43C0C /* attributeOrganizer.swift in Sources */,
 				D458F505237A147400DF4618 /* DataError.swift in Sources */,
 				D458F4FF237243E500DF4618 /* WebManager.swift in Sources */,
 				D492ABF3235543DF00DF2BE8 /* ViewController.swift in Sources */,
 				D458F507237A15D200DF4618 /* JSONDownloader.swift in Sources */,
 				D4C17D03236B963500926A25 /* ViewControllerMainScreen.swift in Sources */,
+				D48C8BF9238CB41E00E6E7B6 /* PlanetData.swift in Sources */,
 				D458F50D237A195C00DF4618 /* StarshipData.swift in Sources */,
 				D458F50B237A17B500DF4618 /* VehicalData.swift in Sources */,
 				D4C17D01236B931700926A25 /* ViewControllerDisplayOrganizer.swift in Sources */,
 				D492ABF1235543DF00DF2BE8 /* AppDelegate.swift in Sources */,
-				D458F50F2383739400DF4618 /* Endpoint.swift in Sources */,
+				D48C8BF7238B65CB00E6E7B6 /* MeterConversion.swift in Sources */,
 				D4C17D0B2370B92D00926A25 /* CharacterData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
