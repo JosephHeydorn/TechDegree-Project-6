@@ -1,160 +1,77 @@
 import Foundation
 
-let vcUpdater = ViewControllerMainScreen()
-//These help pass array data to the VC
-var pickerViewAttribute1 = [""]
-var displayAttribute2 = [""]
-var displayAttribute3 = [""]
-var displayAttribute4 = [""]
-var displayAttribute5 = [""]
-
-func pickerViewCharacterDisplay() {
-    pickerViewAttribute1 = arrayOfCharacterAttribute1
-    displayAttribute2 = arrayOfplanets
-    displayAttribute3 = arrayOfCharacterAttribute3
-    displayAttribute4 = arrayOfCharacterAttribute4
-    displayAttribute5 = arrayOfCharacterAttribute5
-    print("\(pickerViewAttribute1.count) Values In Character Array!")
-}
-
-func pickerViewVehicleDisplay() {
-    pickerViewAttribute1 = arrayOfVehicleAttribute1
-    displayAttribute2 = arrayOfVehicleAttribute2
-    displayAttribute3 = arrayOfVehicleAttribute3
-    displayAttribute4 = arrayOfVehicleAttribute4
-    displayAttribute5 = arrayOfVehicleAttribute5
-    print("\(pickerViewAttribute1.count) Values In Vehicle Array!")
-}
-
-func pickerViewStarshipDisplay() {
-    pickerViewAttribute1 = arrayOfStarshipAttribute1
-    displayAttribute2 = arrayOfStarshipAttribute2
-    displayAttribute3 = arrayOfStarshipAttribute3
-    displayAttribute4 = arrayOfStarshipAttribute4
-    displayAttribute5 = arrayOfStarshipAttribute5
-    print("\(pickerViewAttribute1.count) Values In Starship Array!")
-}
-
-func updateVC() {
-}
-
-class WebManager {
+final class WebManager {
     
-    let downloader = JSONDownloader()
+    private static let downloader = JSONDownloader()
     
-    class func downloaderPeopleAPI() {
-        let jsonURLString = "https://swapi.co/api/people/"
-        guard let url = URL(string: jsonURLString) else {return}
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            DispatchQueue.main.async {
-            guard let data = data else { return }
-            do {
-                let characterData = try
-                    JSONDecoder().decode(PeopleResultsData.self, from: data)
-                clearAllCharacterArrays() //Clears the array for a fresh start up of names.
-                let characterResults = characterData.results
-                for characterNamesList in characterResults {
-                    arrayOfCharacterAttribute1.append(characterNamesList.name)
-                    arrayOfCharacterAttribute2.append(characterNamesList.homeworld)
-                    arrayOfCharacterAttribute3.append(characterNamesList.height)
-                    arrayOfCharacterAttribute4.append(characterNamesList.eye_color)
-                    arrayOfCharacterAttribute5.append(characterNamesList.hair_color)
-                }
-            } catch let jsonError {
-                print("Error Getting JSON:", jsonError)
-            }
-                for planets in arrayOfCharacterAttribute2 {
-                    guard let url = URL(string: planets) else {return}
-                    URLSession.shared.dataTask(with: url) { (data, response, error) in
-                        DispatchQueue.main.async {
-                        guard let data = data else { return }
-                        do {
-                            let planetData = try JSONDecoder().decode(PlanetData.self, from: data)
-                            arrayOfplanets.append(planetData.name)
-                            print(planetData.name)
-                        } catch let jsonError {
-                            print("Error Getting JSON", jsonError)
-                            }
-                        }
-                        }.resume()
-                }
-                pickerViewCharacterDisplay()
-                vcUpdater.updateCurrentView()
-            }
-            }.resume()
-    }
-    
-    class func downloaderVehicleAPI() {
-        let jsonURLString = "https://swapi.co/api/vehicles/"
-        guard let url = URL(string: jsonURLString) else {return}
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            DispatchQueue.main.async {
-                guard let data = data else { return }
+    class func downloadPeople(completion: @escaping (Result<[Character], Error>) -> Void) {
+        guard let url = URL(string: "https://swapi.co/api/people") else { return }
+        
+        downloader.jsonTask(with: url) { result in
+            switch result {
+            case .failure(let error): completion(.failure(error))
+            case .success(let data):
                 do {
-                    let vehicleData = try
-                        JSONDecoder().decode(VehicleResultsData.self, from: data)
-                    clearAllVehicleArrays() //Clears the array for a fresh start up of names.
-                    let vehicleResults = vehicleData.results
-                    for vehicleResultList in vehicleResults {
-                        arrayOfVehicleAttribute1.append(vehicleResultList.name)
-                        arrayOfVehicleAttribute2.append(vehicleResultList.cost_in_credits)
-                        arrayOfVehicleAttribute3.append(vehicleResultList.length)
-                        arrayOfVehicleAttribute4.append(vehicleResultList.vehicle_class)
-                        arrayOfVehicleAttribute5.append(vehicleResultList.crew)
-                        print("Got a Vehical")
-                    }
-                } catch let jsonError {
-                    print("Error Getting JSON:", jsonError)
+                    let result = try JSONDecoder.starwarsDecoder.decode(PeopleResultsData.self, from: data)
+                    let people = result.results
+                    completion(.success(people))
+                } catch {
+                    completion(.failure(error))
                 }
             }
-            }.resume()
+        }.resume()
     }
     
-    class func downloaderStarshipAPI() {
-        let jsonURLString = "https://swapi.co/api/starships/"
-        guard let url = URL(string: jsonURLString) else {return}
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            DispatchQueue.main.async {
-                guard let data = data else { return }
+    class func downloadHomePlanet(for person: Character, completion: @escaping (Result<Planet, Error>) -> Void) {
+        guard let urlString = person.homeworld, let url = URL(string: urlString) else { return }
+        
+        downloader.jsonTask(with: url) { result in
+            switch result {
+            case .failure(let error): completion(.failure(error))
+            case .success(let data):
                 do {
-                    let starshipData = try
-                        JSONDecoder().decode(StarshipResultsData.self, from: data)
-                    clearAllStarshipArrays() //Clears the array for a fresh start up of names.
-                    let starshipResults = starshipData.results
-                    for starshipResultList in starshipResults {
-                        arrayOfStarshipAttribute1.append(starshipResultList.name)
-                        arrayOfStarshipAttribute2.append(starshipResultList.cost_in_credits)
-                        arrayOfStarshipAttribute3.append(starshipResultList.length)
-                        arrayOfStarshipAttribute4.append(starshipResultList.starship_class)
-                        arrayOfStarshipAttribute5.append(starshipResultList.crew)
-                    }
-                } catch let jsonError {
-                    print("Error Getting JSON:", jsonError)
+                    let result = try JSONDecoder.starwarsDecoder.decode(Planet.self, from: data)
+                    completion(.success(result))
+                } catch {
+                    completion(.failure(error))
                 }
             }
-            }.resume()
+        }.resume()
     }
-}
-
-func clearAllCharacterArrays() {
-    arrayOfCharacterAttribute1.removeAll()
-    arrayOfCharacterAttribute2.removeAll()
-    arrayOfCharacterAttribute3.removeAll()
-    arrayOfCharacterAttribute4.removeAll()
-    arrayOfCharacterAttribute5.removeAll()
-}
-func clearAllVehicleArrays() {
-    arrayOfVehicleAttribute1.removeAll()
-    arrayOfVehicleAttribute2.removeAll()
-    arrayOfVehicleAttribute3.removeAll()
-    arrayOfVehicleAttribute4.removeAll()
-    arrayOfVehicleAttribute5.removeAll()
-}
-
-func clearAllStarshipArrays() {
-    arrayOfStarshipAttribute1.removeAll()
-    arrayOfStarshipAttribute2.removeAll()
-    arrayOfStarshipAttribute3.removeAll()
-    arrayOfStarshipAttribute4.removeAll()
-    arrayOfStarshipAttribute5.removeAll()
+    
+    class func downloadVehicles(completion: @escaping (Result<[Vehicle], Error>) -> Void) {
+        guard let url = URL(string: "https://swapi.co/api/vehicles") else { return }
+        
+        downloader.jsonTask(with: url) { result in
+            switch result {
+            case .failure(let error): completion(.failure(error))
+            case .success(let data):
+                do {
+                    let result = try JSONDecoder.starwarsDecoder.decode(VehicleResultsData.self, from: data)
+                    let vehicles = result.results
+                    completion(.success(vehicles))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
+    
+    class func downloadStarships(completion: @escaping (Result<[Starship], Error>) -> Void) {
+        guard let url = URL(string: "https://swapi.co/api/starships") else { return }
+        
+        downloader.jsonTask(with: url) { result in
+            switch result {
+            case .failure(let error): completion(.failure(error))
+            case .success(let data):
+                do {
+                    let result = try JSONDecoder.starwarsDecoder.decode(StarshipResultsData.self, from: data)
+                    let starships = result.results
+                    completion(.success(starships))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
 }

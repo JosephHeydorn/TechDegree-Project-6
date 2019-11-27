@@ -8,51 +8,33 @@
 
 import UIKit
 
-var viewControllerData = ViewControllerDisplayOragnizer.character
+final class ViewController: UIViewController {
 
-class ViewController: UIViewController {
+    //MARK: - IBOutlets
+    @IBOutlet private weak var characterButton: UIButton!
+    @IBOutlet private weak var vehicleButton: UIButton!
+    @IBOutlet private weak var starshipsButton: UIButton!
 
-    @IBOutlet weak var characterButton: UIButton!
-    @IBOutlet weak var vehicleButton: UIButton!
-    @IBOutlet weak var starshipsButton: UIButton!
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        downloadAllData()
-        // Do any additional setup after loading the view.
-    }
-
-    @IBAction func characterButtonPressed(_ sender: Any) {
-        viewControllerData = ViewControllerDisplayOragnizer.character
-        //WebManager.downloaderPeopleAPI()
-        VCTransition()
+    //MARK: - IBSegueActions
+    //Segue actions are an addition in iOS 13. Just wanted to show you how you can leverage them for the future. Also no stringly typed code to trigger a segue 🎉
+    @IBSegueAction private func peopleSegueTriggered(_ coder: NSCoder) -> ViewControllerMainScreen? {
+        let viewController = ViewControllerMainScreen(coder: coder)
+        viewController?.entity = .people
         
+        return viewController
     }
     
-    @IBAction func vehicleButtonPressed(_ sender: Any) {
-        viewControllerData = ViewControllerDisplayOragnizer.vehical
-        pickerViewVehicleDisplay()
-        VCTransition()
+    @IBSegueAction private func vehiclesSegueTriggered(_ coder: NSCoder) -> ViewControllerMainScreen? {
+        let viewController = ViewControllerMainScreen(coder: coder)
+        viewController?.entity = .vehicles
+        
+        return viewController
     }
     
-    @IBAction func starshipsButtonPressed(_ sender: Any) {
-        viewControllerData = ViewControllerDisplayOragnizer.starships
-        pickerViewStarshipDisplay()
-        VCTransition()
+    @IBSegueAction private func starshipsSegueTriggered(_ coder: NSCoder) -> ViewControllerMainScreen? {
+        let viewController = ViewControllerMainScreen(coder: coder)
+        viewController?.entity = .starships
+        
+        return viewController
     }
-    
-    func VCTransition() {
-        let vc = self.storyboard?.instantiateViewController(withIdentifier: "ViewControllerMainScreen") as! ViewControllerMainScreen
-        self.present(vc, animated: true, completion: nil)
-    }
-    
-    
-    //This helps save the user data so they aren't contstantly downloading the data everytime they load a new view.
-    func downloadAllData() {
-        WebManager.downloaderVehicleAPI()
-        WebManager.downloaderStarshipAPI()
-    }
-
 }
-
