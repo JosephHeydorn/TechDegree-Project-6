@@ -1,16 +1,12 @@
 import Foundation
 
+let vcUpdater = ViewControllerMainScreen()
 //These help pass array data to the VC
-var pickerViewAttribute1 = [String]()
-var displayAttribute2 = [String]()
-var displayAttribute3 = [String]()
-var displayAttribute4 = [String]()
-var displayAttribute5 = [String]()
-
-//Fills picker view
-func assignPickerViewPeople() {
-    WebManager.downloaderPeopleAPI()
-}
+var pickerViewAttribute1 = [""]
+var displayAttribute2 = [""]
+var displayAttribute3 = [""]
+var displayAttribute4 = [""]
+var displayAttribute5 = [""]
 
 func pickerViewCharacterDisplay() {
     pickerViewAttribute1 = arrayOfCharacterAttribute1
@@ -37,6 +33,9 @@ func pickerViewStarshipDisplay() {
     displayAttribute4 = arrayOfStarshipAttribute4
     displayAttribute5 = arrayOfStarshipAttribute5
     print("\(pickerViewAttribute1.count) Values In Starship Array!")
+}
+
+func updateVC() {
 }
 
 class WebManager {
@@ -75,10 +74,12 @@ class WebManager {
                             print(planetData.name)
                         } catch let jsonError {
                             print("Error Getting JSON", jsonError)
-                        }
+                            }
                         }
                         }.resume()
                 }
+                pickerViewCharacterDisplay()
+                vcUpdater.updateCurrentView()
             }
             }.resume()
     }

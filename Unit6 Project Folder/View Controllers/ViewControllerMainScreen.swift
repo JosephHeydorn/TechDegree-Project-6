@@ -55,9 +55,6 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
         checkDataDisplay()
         self.pickerView.dataSource = self
         self.pickerView.delegate = self
-        updateCurrentView()
-        
-        
 
         // Do any additional setup after loading the view.
     }
@@ -75,6 +72,7 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
             creditsButton.isHidden = true
             usdButton.isHidden = true
             englishButtonEnabled()
+            WebManager.downloaderPeopleAPI()
         } else if viewControllerData == ViewControllerDisplayOragnizer.vehical {
             stackFirstLabel.text = "Make"
             stackSecondLabel.text = "Cost"
@@ -100,8 +98,6 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
     
     
     //ALL THINGS PICKER VIEW
-    
-    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -118,6 +114,7 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
         updateCurrentView()
     }
     
+    //Conversion Buttons
     @IBAction func metricButtonPressed(_ sender: Any) {
         middleThirdLabel.text = displayAttribute3[pickerView.selectedRow(inComponent: 0)]
         englishButtonEnabled()
@@ -131,9 +128,7 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
         metricButtonEnabled()
     }
     
-    
     func updateCurrentView() {
-    
         subNameLabel.text = pickerViewAttribute1[pickerView.selectedRow(inComponent: 0)]
         middleFirstLabel.text = pickerViewAttribute1[pickerView.selectedRow(inComponent: 0)]
         middleSecondLabel.text = displayAttribute2[pickerView.selectedRow(inComponent: 0)]
@@ -141,14 +136,12 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
         middleFourthLabel.text = displayAttribute4[pickerView.selectedRow(inComponent: 0)]
         middleFifthLabel.text = displayAttribute5[pickerView.selectedRow(inComponent: 0)]
         englishButtonEnabled()
-        
     }
 
     func unitStringConversion() {
         let metersString = displayAttribute3[pickerView.selectedRow(inComponent: 0)]
         let metersDoubleConvert = Double(metersString) ?? 0
         meterPasserDouble = metersDoubleConvert
-        
     }
     
     //Below Greys out the buttons when it is selected to stop it from being spammed. 

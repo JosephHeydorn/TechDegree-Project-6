@@ -25,7 +25,7 @@ class ViewController: UIViewController {
 
     @IBAction func characterButtonPressed(_ sender: Any) {
         viewControllerData = ViewControllerDisplayOragnizer.character
-        pickerViewCharacterDisplay()
+        //WebManager.downloaderPeopleAPI()
         VCTransition()
         
     }
@@ -50,7 +50,6 @@ class ViewController: UIViewController {
     
     //This helps save the user data so they aren't contstantly downloading the data everytime they load a new view.
     func downloadAllData() {
-        WebManager.downloaderPeopleAPI()
         WebManager.downloaderVehicleAPI()
         WebManager.downloaderStarshipAPI()
     }
