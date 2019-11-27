@@ -8,61 +8,174 @@
 
 import UIKit
 
-class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+final class ViewControllerMainScreen: UIViewController {
     
-    var values: [AnyObject] = []
-    
-    let client = WebManager()
-    
+    //MARK: - IBOutlets
     //Picker View
-    @IBOutlet weak var pickerView: UIPickerView!
-    @IBOutlet weak var pickerViewButton: UIButton!
-    
-    
+    @IBOutlet private weak var pickerView: UIPickerView!
     
     //Upper Labels
-    @IBOutlet weak var mainNameLabel: UILabel!
-    @IBOutlet weak var subNameLabel: UILabel!
-    
-    
+    @IBOutlet private weak var mainNameLabel: UILabel!
+    @IBOutlet private weak var subNameLabel: UILabel!
     
     //Stack First Row Label
-    @IBOutlet weak var stackFirstLabel: UILabel!
-    @IBOutlet weak var stackSecondLabel: UILabel!
-    @IBOutlet weak var stackThirdLabel: UILabel!
-    @IBOutlet weak var stackFourthLabel: UILabel!
-    @IBOutlet weak var stackFifthLabel: UILabel!
+    @IBOutlet private weak var stackFirstLabel: UILabel!
+    @IBOutlet private weak var stackSecondLabel: UILabel!
+    @IBOutlet private weak var stackThirdLabel: UILabel!
+    @IBOutlet private weak var stackFourthLabel: UILabel!
+    @IBOutlet private weak var stackFifthLabel: UILabel!
     
     //Stack Second Row Label
-    @IBOutlet weak var middleFirstLabel: UILabel!
-    @IBOutlet weak var middleSecondLabel: UILabel!
-    @IBOutlet weak var middleThirdLabel: UILabel!
-    @IBOutlet weak var middleFourthLabel: UILabel!
-    @IBOutlet weak var middleFifthLabel: UILabel!
+    @IBOutlet private weak var middleFirstLabel: UILabel!
+    @IBOutlet private weak var middleSecondLabel: UILabel!
+    @IBOutlet private weak var middleThirdLabel: UILabel!
+    @IBOutlet private weak var middleFourthLabel: UILabel!
+    @IBOutlet private weak var middleFifthLabel: UILabel!
     
     //Stack Buttons
-    @IBOutlet weak var metricButton: UIButton!
-    @IBOutlet weak var englishButton: UIButton!
-    @IBOutlet weak var creditsButton: UIButton!
-    @IBOutlet weak var usdButton: UIButton!
+    @IBOutlet private weak var metricButton: UIButton!
+    @IBOutlet private weak var englishButton: UIButton!
+    @IBOutlet private weak var creditsButton: UIButton!
+    @IBOutlet private weak var usdButton: UIButton!
     
+    //MARK: - Properties
+    //This one is used to pass the selected entity from the ViewController.
+    var entity: StarWarsEntity?
     
+    //Those store the currently selected entities data
+    private var people: [Character]?
+    private var selectedPerson: Character?
     
+    private var starships: [Starship]?
+    private var selectedStarship: Starship?
     
-
+    private var vehicles: [Vehicle]?
+    private var selectedVehicle: Vehicle?
+    
+    //MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        checkDataDisplay()
+        
         self.pickerView.dataSource = self
         self.pickerView.delegate = self
-
-        // Do any additional setup after loading the view.
+        
+        downloadDataForSelectedEntity()
     }
     
-    
+    //MARK: - Data downloading
     //Add Data to transfer
-    func checkDataDisplay() {
-        if viewControllerData == ViewControllerDisplayOragnizer.character {
+    private func downloadDataForSelectedEntity() {
+        guard let entity = entity else { return }
+        
+        switch entity {
+        case .people:
+            //Always use a weak or unowned reference to a closure in your VC. Refusing to do so will lead to crashes when the VC is downloading data and you navigate to another VC.
+            WebManager.downloadPeople { [weak self] result in
+                switch result {
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        self?.presentAlert(with: "Error", message: error.localizedDescription)
+                    }
+                case .success(let people):
+                    self?.people = people
+                    DispatchQueue.main.async {
+                        self?.updateLabels(for: .people)
+                        self?.pickerView.reloadAllComponents()
+                        self?.pickerView.selectRow(0, inComponent: 0, animated: false)
+                        self?.update(with: people[0])
+                    }
+                }
+            }
+        case .starships:
+            WebManager.downloadStarships { [weak self] result in
+                switch result {
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        self?.presentAlert(with: "Error", message: error.localizedDescription)
+                    }
+                case .success(let starships):
+                    self?.starships = starships
+                    DispatchQueue.main.async {
+                        self?.updateLabels(for: .starships)
+                        self?.pickerView.reloadAllComponents()
+                        self?.pickerView.selectRow(0, inComponent: 0, animated: false)
+                        self?.update(with: starships[0])
+                    }
+                }
+            }
+        case .vehicles:
+            WebManager.downloadVehicles { [weak self] result in
+                switch result {
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        self?.presentAlert(with: "Error", message: error.localizedDescription)
+                    }
+                case .success(let vehicles):
+                    self?.vehicles = vehicles
+                    DispatchQueue.main.async {
+                        self?.updateLabels(for: .vehicles)
+                        self?.pickerView.reloadAllComponents()
+                        self?.pickerView.selectRow(0, inComponent: 0, animated: false)
+                        self?.update(with: vehicles[0])
+                    }
+                }
+            }
+        }
+    }
+    
+    //MARK: - UI update methods
+    //Helper methods to update the UI when an entity is selected
+    private func update(with person: Character) {
+        middleSecondLabel.text = "Loading"
+        
+        selectedPerson = person
+        
+        subNameLabel.text = person.name
+        middleFirstLabel.text = person.name
+        middleThirdLabel.text = person.height
+        middleFourthLabel.text = person.eyeColor
+        middleFifthLabel.text = person.hairColor
+        
+        WebManager.downloadHomePlanet(for: person) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self?.presentAlert(with: "Error", message: error.localizedDescription)
+                }
+            case .success(let planet):
+                print(planet)
+                DispatchQueue.main.async {
+                    self?.middleSecondLabel.text = planet.name
+                }
+            }
+        }
+    }
+    
+    private func update(with starship: Starship) {
+        selectedStarship = starship
+        
+        subNameLabel.text = starship.name
+        middleFirstLabel.text = starship.name
+        middleSecondLabel.text = starship.costInCredits
+        middleThirdLabel.text = starship.length
+        middleFourthLabel.text = starship.starshipClass
+        middleFifthLabel.text = starship.crew
+    }
+    
+    private func update(with vehicle: Vehicle) {
+        selectedVehicle = vehicle
+        
+        subNameLabel.text = vehicle.name
+        middleFirstLabel.text = vehicle.name
+        middleSecondLabel.text = vehicle.costInCredits
+        middleThirdLabel.text = vehicle.length
+        middleFourthLabel.text = vehicle.vehicleClass
+        middleFifthLabel.text = vehicle.crew
+    }
+    
+    private func updateLabels(for entity: StarWarsEntity) {
+        switch entity {
+        case .people:
             stackFirstLabel.text = "Name"
             stackSecondLabel.text = "Home"
             stackThirdLabel.text = "Height"
@@ -71,9 +184,7 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
             mainNameLabel.text = "Characters"
             creditsButton.isHidden = true
             usdButton.isHidden = true
-            englishButtonEnabled()
-            WebManager.downloaderPeopleAPI()
-        } else if viewControllerData == ViewControllerDisplayOragnizer.vehical {
+        case .vehicles:
             stackFirstLabel.text = "Make"
             stackSecondLabel.text = "Cost"
             stackThirdLabel.text = "Length"
@@ -82,7 +193,7 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
             mainNameLabel.text = "Vehicals"
             creditsButton.isHidden = false
             usdButton.isHidden = false
-        } else if viewControllerData == ViewControllerDisplayOragnizer.starships {
+        case .starships:
             stackFirstLabel.text = "Make"
             stackSecondLabel.text = "Cost"
             stackThirdLabel.text = "Length"
@@ -91,70 +202,118 @@ class ViewControllerMainScreen: UIViewController, UIPickerViewDelegate, UIPicker
             mainNameLabel.text = "Starships"
             creditsButton.isHidden = false
             usdButton.isHidden = false
-            
         }
     }
-
     
-    
-    //ALL THINGS PICKER VIEW
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return pickerViewAttribute1.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return pickerViewAttribute1[row]
-    }
-    
-    @IBAction func pickerViewButtonPressed(_ sender: Any) {
-        updateCurrentView()
-    }
-    
-    //Conversion Buttons
-    @IBAction func metricButtonPressed(_ sender: Any) {
-        middleThirdLabel.text = displayAttribute3[pickerView.selectedRow(inComponent: 0)]
-        englishButtonEnabled()
-        
-    }
-    
-    @IBAction func englishButtonPressed(_ sender: Any) {
-        unitStringConversion()
-        convertToMeters()
-        middleThirdLabel.text = meterPasserString
-        metricButtonEnabled()
-    }
-    
-    func updateCurrentView() {
-        subNameLabel.text = pickerViewAttribute1[pickerView.selectedRow(inComponent: 0)]
-        middleFirstLabel.text = pickerViewAttribute1[pickerView.selectedRow(inComponent: 0)]
-        middleSecondLabel.text = displayAttribute2[pickerView.selectedRow(inComponent: 0)]
-        middleThirdLabel.text = displayAttribute3[pickerView.selectedRow(inComponent: 0)]
-        middleFourthLabel.text = displayAttribute4[pickerView.selectedRow(inComponent: 0)]
-        middleFifthLabel.text = displayAttribute5[pickerView.selectedRow(inComponent: 0)]
-        englishButtonEnabled()
-    }
-
-    func unitStringConversion() {
-        let metersString = displayAttribute3[pickerView.selectedRow(inComponent: 0)]
-        let metersDoubleConvert = Double(metersString) ?? 0
-        meterPasserDouble = metersDoubleConvert
-    }
-    
-    //Below Greys out the buttons when it is selected to stop it from being spammed. 
-    func metricButtonEnabled() {
+    //Below Greys out the buttons when it is selected to stop it from being spammed.
+    private func enableMetricButton() {
         metricButton.isEnabled = true
         metricButton.setTitleColor(UIColor.gray, for: .disabled)
         englishButton.isEnabled = false
         englishButton.setTitleColor(UIColor.gray, for: .disabled)
     }
-    func englishButtonEnabled() {
+    private func enableEnglishButton() {
         metricButton.isEnabled = false
         metricButton.setTitleColor(UIColor.gray, for: .disabled)
         englishButton.isEnabled = true
         englishButton.setTitleColor(UIColor.gray, for: .disabled)
+    }
+    
+    //MARK: - IBActions
+    //Conversion Buttons
+    @IBAction private func metricButtonPressed(_ sender: Any) {
+        guard let entity = entity else { return }
+        
+        switch entity {
+        case .people:
+            guard let person = selectedPerson else { return }
+            middleThirdLabel.text = person.height
+        case .starships:
+            guard let starship = selectedStarship else { return }
+            middleThirdLabel.text = starship.length
+        case .vehicles:
+            guard let vehicle = selectedVehicle else { return }
+            middleThirdLabel.text = vehicle.length
+        }
+        
+        enableEnglishButton()
+    }
+    
+    @IBAction private func englishButtonPressed(_ sender: Any) {
+        guard let entity = entity else { return }
+        
+        switch entity {
+        case .people:
+            guard let person = selectedPerson, let heightDouble = Double(person.height) else { return }
+            middleThirdLabel.text = heightDouble.convertingCMToInches()
+        case .starships:
+            guard let starship = selectedStarship, let lengthDouble = Double(starship.length) else { return }
+            middleThirdLabel.text = lengthDouble.convertingMetersToInches()
+        case .vehicles:
+            guard let vehicle = selectedVehicle, let lengthDouble = Double(vehicle.length) else { return }
+            middleThirdLabel.text = lengthDouble.convertingMetersToInches()
+        }
+        
+        enableMetricButton()
+    }
+    
+    @IBAction private func backButtonTapped(_ sender: UIButton) {
+        navigationController?.popViewController(animated: true)
+    }
+}
+
+//Best practice is to add protocol conformances to extensions. This lets you find your code easier and somewhat encapsulates dependencies
+//MARK: - UIPickerViewDataSource
+extension ViewControllerMainScreen: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        guard let entity = entity else { return 0 }
+        
+        switch entity {
+        case .people: return people?.count ?? 0
+        case .starships: return starships?.count ?? 0
+        case .vehicles: return vehicles?.count ?? 0
+        }
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        guard let entity = entity else { return nil }
+        
+        switch entity {
+        case .people:
+            guard let people = people else { return nil }
+            let personName = people[row].name
+            return personName
+        case .starships:
+            guard let starships = starships else { return nil }
+            let starshipName = starships[row].name
+            return starshipName
+        case .vehicles:
+            guard let vehicles = vehicles else { return nil }
+            let vehicleName = vehicles[row].name
+            return vehicleName
+        }
+    }
+}
+
+//MARK: - UIPickerViewDelegate
+extension ViewControllerMainScreen: UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        guard let entity = entity else { return }
+        
+        switch entity {
+        case .people:
+            guard let people = people else { return }
+            update(with: people[row])
+        case .starships:
+            guard let starships = starships else { return }
+            update(with: starships[row])
+        case .vehicles:
+            guard let vehicles = vehicles else { return }
+            update(with: vehicles[row])
+        }
     }
 }

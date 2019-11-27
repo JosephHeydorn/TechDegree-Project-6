@@ -1,7 +1,7 @@
 import Foundation
 
-class JSONDownloader {
-    let session: URLSession
+final class JSONDownloader {
+    private let session: URLSession
     
     init(configuration: URLSessionConfiguration) {
         self.session = URLSession(configuration: configuration)
@@ -11,28 +11,24 @@ class JSONDownloader {
         self.init(configuration: .default)
     }
     
-    
-    typealias JSONTaskCompletionHandler = (Data?, DataError?) -> Void
-    
-    func jsonTask(with request: URLRequest, completionHandler completion: @escaping JSONTaskCompletionHandler) -> URLSessionDataTask {
-        let task = session.dataTask(with: request) { data, response, error in
+    func jsonTask(with url: URL, completionHandler completion: @escaping (Result<Data, DataError>) -> Void) -> URLSessionDataTask {
+        let task = session.dataTask(with: url) { data, response, error in
             
             guard let httpResponse = response as? HTTPURLResponse else {
-                completion(nil, .requestFailed)
+                completion(.failure(.requestFailed))
                 return
             }
             
             if httpResponse.statusCode == 200 {
                 if let data = data {
                     do {
-                        let json = data
-                        completion(json, nil)
+                        completion(.success(data))
                     }
                 } else {
-                    completion(nil, .invalidData)
+                    completion(.failure(.invalidData))
                 }
             } else {
-                completion(nil, .responseUnsuccessful)
+                completion(.failure(.responseUnsuccessful))
             }
             
         }
@@ -40,4 +36,3 @@ class JSONDownloader {
         return task
     }
 }
-

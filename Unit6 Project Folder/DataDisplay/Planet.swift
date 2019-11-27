@@ -8,8 +8,6 @@
 
 import Foundation
 
-struct PlanetData: Codable {
+struct Planet: Codable {
     let name: String
 }
-
-var arrayOfplanets = [String]()
