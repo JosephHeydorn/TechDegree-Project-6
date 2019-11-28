@@ -10,6 +10,8 @@ import UIKit
 
 final class ViewControllerMainScreen: UIViewController {
     
+    var conversionRate = 0
+    
     //MARK: - IBOutlets
     //Picker View
     @IBOutlet private weak var pickerView: UIPickerView!
@@ -257,9 +259,72 @@ final class ViewControllerMainScreen: UIViewController {
         enableMetricButton()
     }
     
+    @IBAction private func usdButtonPressed(_ sender: Any) {
+        guard let entity = entity else { return }
+        
+        switch entity {
+        case .people:
+            guard let person = selectedPerson else { return }
+            middleSecondLabel.text = person.homeworld
+        
+        case .starships:
+            guard let starship = selectedStarship, let creditsDouble = Double(starship.costInCredits) else {
+                return }
+            if conversionRate == 0 {
+            let alert = UIAlertController(title: "Test", message: "Test", preferredStyle: .alert)
+                
+                alert.addTextField { (textField) in
+                    textField.placeholder = "Ex. 250"
+                }
+                
+                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: {[weak alert] (_) in
+                    let textField = alert?.textFields![0]
+                    
+                    guard let conversionString: String = textField?.text else {
+                        print("Error")
+                        return
+                    }
+                    guard let conversionInt: Int = Int(conversionString) else {
+                        print("Error")
+                        return
+                    }
+                    
+                    self.conversionRate = conversionInt
+                    self.usdButtonPressed(self.usdButton!)
+                    
+                }))
+                self.present(alert, animated: true, completion: nil)
+            }
+        case .vehicles:
+            guard let vehical = selectedVehicle, let creditsDouble = Double(vehical.costInCredits) else { return }
+        }
+    }
+    
+    @IBAction private func creditsButtonPressed(_ sender: Any) {
+        guard let entity = entity else { return }
+        
+        switch entity {
+        case .people:
+            guard let person = selectedPerson else { return }
+            middleSecondLabel.text = person.homeworld
+        case .starships:
+            guard let starship = selectedStarship else { return }
+            middleSecondLabel.text = starship.costInCredits
+        case .vehicles:
+            guard let vehicle = selectedVehicle else { return }
+            middleSecondLabel.text = vehicle.costInCredits
+        }
+        
+    }
+    
+    
+    
+    
+    //Back Button Tap
     @IBAction private func backButtonTapped(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
     }
+    
 }
 
 //Best practice is to add protocol conformances to extensions. This lets you find your code easier and somewhat encapsulates dependencies

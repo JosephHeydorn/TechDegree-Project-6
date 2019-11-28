@@ -13,6 +13,7 @@ import Foundation
  let lengthInCM = 1.5
  let lengthInInches = lengthInCM.convertingCMToInches
  */
+var alertTextFieldPasser = String()
 
 extension Double {
     func convertingMetersToInches() -> String {
@@ -21,5 +22,10 @@ extension Double {
     
     func convertingCMToInches() -> String {
         return String(describing: (self * 0.3937).rounded())
+    }
+    
+    func convertToUSD() -> String {
+        let stringConverter = Double(alertTextFieldPasser)
+        return String(describing: (self / stringConverter!).rounded())
     }
 }
