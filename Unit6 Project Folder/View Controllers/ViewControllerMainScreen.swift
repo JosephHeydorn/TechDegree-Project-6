@@ -85,6 +85,8 @@ final class ViewControllerMainScreen: UIViewController {
                         self?.pickerView.reloadAllComponents()
                         self?.pickerView.selectRow(0, inComponent: 0, animated: false)
                         self?.update(with: people[0])
+                        self?.enableUSDButton()
+                        self?.enableEnglishButton()
                     }
                 }
             }
@@ -102,6 +104,8 @@ final class ViewControllerMainScreen: UIViewController {
                         self?.pickerView.reloadAllComponents()
                         self?.pickerView.selectRow(0, inComponent: 0, animated: false)
                         self?.update(with: starships[0])
+                        self?.enableUSDButton()
+                        self?.enableEnglishButton()
                     }
                 }
             }
@@ -119,6 +123,8 @@ final class ViewControllerMainScreen: UIViewController {
                         self?.pickerView.reloadAllComponents()
                         self?.pickerView.selectRow(0, inComponent: 0, animated: false)
                         self?.update(with: vehicles[0])
+                        self?.enableUSDButton()
+                        self?.enableEnglishButton()
                     }
                 }
             }
@@ -151,6 +157,8 @@ final class ViewControllerMainScreen: UIViewController {
                 }
             }
         }
+        enableUSDButton()
+        enableEnglishButton()
     }
     
     private func update(with starship: Starship) {
@@ -162,6 +170,9 @@ final class ViewControllerMainScreen: UIViewController {
         middleThirdLabel.text = starship.length
         middleFourthLabel.text = starship.starshipClass
         middleFifthLabel.text = starship.crew
+        
+        enableUSDButton()
+        enableEnglishButton()
     }
     
     private func update(with vehicle: Vehicle) {
@@ -173,6 +184,9 @@ final class ViewControllerMainScreen: UIViewController {
         middleThirdLabel.text = vehicle.length
         middleFourthLabel.text = vehicle.vehicleClass
         middleFifthLabel.text = vehicle.crew
+        
+        enableUSDButton()
+        enableEnglishButton()
     }
     
     private func updateLabels(for entity: StarWarsEntity) {
@@ -219,6 +233,20 @@ final class ViewControllerMainScreen: UIViewController {
         metricButton.setTitleColor(UIColor.gray, for: .disabled)
         englishButton.isEnabled = true
         englishButton.setTitleColor(UIColor.gray, for: .disabled)
+    }
+    
+    private func enableUSDButton() {
+        creditsButton.isEnabled = false
+        creditsButton.setTitleColor(UIColor.gray, for: .disabled)
+        usdButton.isEnabled = true
+        usdButton.setTitleColor(UIColor.gray, for: .disabled)
+    }
+    
+    private func enableCreditButton() {
+        creditsButton.isEnabled = true
+        creditsButton.setTitleColor(UIColor.gray, for: .disabled)
+        usdButton.isEnabled = false
+        usdButton.setTitleColor(UIColor.gray, for: .disabled)
     }
     
     //MARK: - IBActions
@@ -268,8 +296,54 @@ final class ViewControllerMainScreen: UIViewController {
             middleSecondLabel.text = person.homeworld
         
         case .starships:
-            guard let starship = selectedStarship, let creditsDouble = Double(starship.costInCredits) else {
-                return }
+            if conversionRate == 0 {
+            let alert = UIAlertController(title: "Please Enter a Conversion Rate", message: "(Credits / Conversion Rate)", preferredStyle: .alert)
+                
+                alert.addTextField { (textField) in
+                    textField.placeholder = "Ex. 250"
+                }
+                
+                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: {[weak alert] (_) in
+                    let textField = alert?.textFields![0]
+                    
+                    guard let conversionString: String = textField?.text else {
+                        print("PLEASE ENTER A NUMERIC VALUE")
+                        return
+                    }
+                    guard let conversionInt: Int = Int(conversionString) else {
+                        let quickAlert = UIAlertController(title: "Invalid Conversion Rate", message: "Please Enter a Numeric Value.", preferredStyle: .alert)
+                        quickAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+                        self.present(quickAlert, animated: true)
+                        return
+                    }
+                    
+                    self.conversionRate = conversionInt
+                    self.usdButtonPressed(self.usdButton!)
+                    
+                }))
+                self.present(alert, animated: true)
+            }
+            
+            if conversionRate != 0 {
+                
+                guard let costString = middleSecondLabel.text else {
+                    print("No String Value")
+                    return
+                }
+                guard let costIntValue = Int(costString) else {
+                    let quickAlert = UIAlertController(title: "Cannot Convert This Value", message: nil, preferredStyle: .alert)
+                    quickAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+                    self.present(quickAlert, animated: true)
+                    return
+                }
+                
+                let convertToUSD = costIntValue / conversionRate
+                middleSecondLabel.text = String(convertToUSD)
+                
+                enableCreditButton()
+                
+            }
+        case .vehicles:
             if conversionRate == 0 {
             let alert = UIAlertController(title: "Test", message: "Test", preferredStyle: .alert)
                 
@@ -281,11 +355,13 @@ final class ViewControllerMainScreen: UIViewController {
                     let textField = alert?.textFields![0]
                     
                     guard let conversionString: String = textField?.text else {
-                        print("Error")
+                        print("PLEASE ENTER A NUMERIC VALUE")
                         return
                     }
                     guard let conversionInt: Int = Int(conversionString) else {
-                        print("Error")
+                        let quickAlert = UIAlertController(title: "Invalid Conversion Rate", message: "Please Enter a Numeric Value.", preferredStyle: .alert)
+                        quickAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+                        self.present(quickAlert, animated: true)
                         return
                     }
                     
@@ -293,10 +369,28 @@ final class ViewControllerMainScreen: UIViewController {
                     self.usdButtonPressed(self.usdButton!)
                     
                 }))
-                self.present(alert, animated: true, completion: nil)
+                self.present(alert, animated: true)
             }
-        case .vehicles:
-            guard let vehical = selectedVehicle, let creditsDouble = Double(vehical.costInCredits) else { return }
+            
+            if conversionRate != 0 {
+                
+                guard let costString = middleSecondLabel.text else {
+                    print("No String Value")
+                    return
+                }
+                guard let costIntValue = Int(costString) else {
+                    let quickAlert = UIAlertController(title: "Cannot Convert This Value", message: nil, preferredStyle: .alert)
+                    quickAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+                    self.present(quickAlert, animated: true)
+                    return
+                }
+                
+                let convertToUSD = costIntValue / conversionRate
+                middleSecondLabel.text = String(convertToUSD)
+                
+                enableCreditButton()
+                
+            }
         }
     }
     
@@ -307,12 +401,15 @@ final class ViewControllerMainScreen: UIViewController {
         case .people:
             guard let person = selectedPerson else { return }
             middleSecondLabel.text = person.homeworld
+            enableUSDButton()
         case .starships:
             guard let starship = selectedStarship else { return }
             middleSecondLabel.text = starship.costInCredits
+            enableUSDButton()
         case .vehicles:
             guard let vehicle = selectedVehicle else { return }
             middleSecondLabel.text = vehicle.costInCredits
+            enableUSDButton()
         }
         
     }
