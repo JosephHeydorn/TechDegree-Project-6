@@ -324,6 +324,15 @@ final class ViewControllerMainScreen: UIViewController {
                 self.present(alert, animated: true)
             }
             
+            //Helps Stop A Negative Conversion Rate
+            if conversionRate < 0 {
+                conversionRate = 0
+                
+                let alert = UIAlertController(title: "Please Enter a Non Negative Conversion Rate", message: nil, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .default))
+                self.present(alert, animated: true)
+            }
+            
             if conversionRate != 0 {
                 
                 guard let costString = middleSecondLabel.text else {
@@ -345,7 +354,7 @@ final class ViewControllerMainScreen: UIViewController {
             }
         case .vehicles:
             if conversionRate == 0 {
-            let alert = UIAlertController(title: "Test", message: "Test", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Please Enter a Conversion Rate", message: "(Credits / Conversion Rate)", preferredStyle: .alert)
                 
                 alert.addTextField { (textField) in
                     textField.placeholder = "Ex. 250"
@@ -369,6 +378,14 @@ final class ViewControllerMainScreen: UIViewController {
                     self.usdButtonPressed(self.usdButton!)
                     
                 }))
+                self.present(alert, animated: true)
+            }
+            //Helps Stop A Negative Conversion Rate
+            if conversionRate < 0 {
+                conversionRate = 0
+                
+                let alert = UIAlertController(title: "Please Enter a Non Negative Conversion Rate", message: nil, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .default))
                 self.present(alert, animated: true)
             }
             
